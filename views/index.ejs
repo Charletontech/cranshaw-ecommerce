@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="css/index.css">
+    <!-- <link rel="stylesheet" href="css/bootstrap-3.4.1-dist/css/bootstrap.min.css"> -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CranShaw | Home</title>
+    <style>
+       
+    </style>
+</head>
+<body>
+    <aside>
+        <div class="asideHero">
+            <img src="img/Screenshot_20240324-140345.jpg" alt="">
+            <div class="asideHeroOverlay">
+                <h1 >CranShaw</h1>
+                <ul>
+                    <li>Sign Up</li>
+                    <li>Login</li>
+                    <li>Contact Us</li>
+        
+                    <!-- <li>Dashboard</li>
+                    <li>Log Out</li>
+                    <li>Contact Us</li> -->
+                </ul>
+            </div>
+        </div>
+    </aside>
+
+    <div class="cover">
+        <p class="closeBtn" onclick="toggleMenu()">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+        </p>
+    </div>
+
+    <section class="main">
+        <div class="nav">
+            <div class="menuIcon" onclick="toggleMenu()">
+                <div class="bar bar1"></div>
+                <div class="bar bar2"></div>
+                <div class="bar bar3"></div>
+            </div>
+            <h3>Store</h3>
+                <p class="cartBtn" onclick="toggleCart()" style="cursor: pointer;">
+                    <svg style="fill: #00dda2;" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z"/></svg>                </p>
+        </div>
+    
+        <!-- Shopping cart -->
+        <div class="cartCont">
+            <div class="cartHeader">
+                <p id="closeCart" onclick="toggleCart()" style="cursor: pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/></svg>
+                </p>
+                <h2>Cart</h2>
+                <p class="clearCart" style="text-align: center;">
+                    <svg  style="fill: rgb(204, 177, 25);"  xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m634-440-81-80h69l110-200H353l-80-80h525q23 0 35.5 19.5t.5 42.5L692-482q-11 20-28 31t-30 11ZM280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm540 52L566-280H304q-44 0-67-37.5t-3-78.5l42-86-72-162L28-820l56-56L876-84l-56 56ZM486-360l-80-80h-62l-40 80h182Zm136-160h-69 69Zm58 440q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80Z"/></svg>
+                    <br>
+                    Clear cart
+                </p>
+            </div>
+
+            <div class="cartRowCont">
+            </div>
+        
+            <div class="cartFooter">
+                <p><b>Total: <span class="total">N0.00</span></b></p>
+                <div class="checkout">
+                    Checkout
+                </div>
+            </div>
+        </div>
+    
+
+         <!-- Shopping cart ends -->
+        <section class="hero">
+            <div class="heroCont">
+                <div class="heroOverlay">
+                    <div class="heroText">
+                        <div class="heroTextHeader" >
+                            <div class="line"></div>
+                            <p>Electronics</p>
+                        </div>
+                        <p>...Find superior quality </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+        <div class="categories">
+            <ul>
+                <li >Electronics</li>
+                <li>Household</li>
+                <li >Gadgets</li>
+                <li>Foodstuff</li>
+                <li>Clothing</li>
+                <li>Shoes</li>
+                <li>Accessories</li>
+                
+            </ul>
+        </div>
+    
+        <section class="showCase">
+            <div class="productsCont">
+                <div class="productCard">
+                    <img src="img/Screenshot_20240324-140030.jpg" alt="">
+                    <div class="productName">
+                        <p >Nike Air</p>
+                    </div>
+                    <div class="productCardDetailCont">
+                        <p>N 10,000</p>
+                        <div>
+                            <i class="id" style="display: none;">1</i>
+                            <button   ><svg class="addToCart" style="fill: white;" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M440-600v-120H320v-80h120v-120h80v120h120v80H520v120h-80ZM280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM40-800v-80h131l170 360h280l156-280h91L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68.5-39t-1.5-79l54-98-144-304H40Z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="productCard">
+                    <img src="img/Screenshot_20240324-135928.jpg" alt="">
+                    <div class="productName">
+                        <p >Headphone Pro</p>
+                    </div>
+                    <div class="productCardDetailCont">
+                        <p>N 15,000</p>
+                        <div>
+                            <i class="id" style="display: none;">2</i>
+                            <button ><svg class="addToCart" style="fill: white; margin-top: -0.3em; margin-left: -0.1em;" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M440-600v-120H320v-80h120v-120h80v120h120v80H520v120h-80ZM280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM40-800v-80h131l170 360h280l156-280h91L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68.5-39t-1.5-79l54-98-144-304H40Z"/></svg></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="productCard">
+                    <img src="img/Screenshot_20240324-135928.jpg" alt="">
+                    <div class="productName">
+                        <p >Headphone Max</p>
+                    </div>
+                    
+                    <div class="productCardDetailCont">
+                        <p>N 20,000</p>
+                        <div>
+                            <i class="id" style="display: none;">3</i>
+                            <button  ><svg class="addToCart" style="fill: white; margin-top: -0.3em; margin-left: -0.1em;" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M440-600v-120H320v-80h120v-120h80v120h120v80H520v120h-80ZM280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM40-800v-80h131l170 360h280l156-280h91L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68.5-39t-1.5-79l54-98-144-304H40Z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+        <footer class="container-fluid fade-slide-section">
+            <div class="footerRow">
+                <div class="footer-sideA col-sm-12 col-md-3">
+                    <img src="img/CraneShawMain.png" alt="">
+                </div>
+                <div class="footer-sideB col-sm-12 col-md-9">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div>
+                                <h3>Join Us Today!</h3>
+                                    <p>
+                                        Whether you're a busy professional, a student, or someone who relies on their phone for every aspect of life, MobCare is here to provide the peace of mind you deserve. Join us on this journey of protection, innovation, and unparalleled service.
+                        Thank you for choosing MobCare to protect what matters most to you.
+        
+                                    </p>
+                            </div>
+                            <div style="margin-top: -2rem;">
+                                <h4>Contact Us</h4>
+                                    <p>
+                                        78 Simpson Street, Lagos.<br>
+                                        info@cranshaw.com.ng<br>
+                                        +2348186815990 
+                                        <p style="text-shadow: .5px 1px 1px rgba(0, 0, 0, 0.4); color: black; font-size: .7em; margin-top: 1rem;">Copyright &copy; CranShaw Nig. 2024</p>
+                                    </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </section>
+
+
+    <script src="js/index.js"></script>
+    <script src="js/sweetalert2@11.js"></script>
+</body>
+</html>
