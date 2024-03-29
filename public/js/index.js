@@ -5,6 +5,7 @@ var aside = document.getElementsByTagName('aside')[0]
 var cartRowCont = document.querySelector('.cartRowCont')
 var displayCategory = document.querySelector('.displayCategory')
 var totalDisplay = document.querySelector('.total');
+var productsCont = document.querySelector('.productsCont')
 
 const  toggleMenu = () => {
     aside.classList.toggle('showAsideMenu')
@@ -23,11 +24,33 @@ var cart = []
 
 //logic to fetch products data from server 
 let products;
+var all = document.getElementById('all')
 window.addEventListener('DOMContentLoaded', async () => {
+    all.classList.add('activeCategory')
     try {
         var getProducts = await axios('/get-all-products')
         products = getProducts.data
-        console.log(products);
+
+        products.forEach(each => {
+                productsCont.innerHTML += `
+                <div class="productCard">
+                    <img src="${each.img}" alt="${each.Name} picture">
+                    <div class="productName">
+                        <p >${each.Name}</p>
+                    </div>
+                    <div class="productCardDetailCont">
+                        <p>${each.price}</p>
+                        <div>
+                            <i class="id" style="display: none;">${each.id}</i>
+                            <button>
+                            <svg class="addToCart" style="fill: white; margin-top: -0.3em; margin-left: -0.1em;" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M440-600v-120H320v-80h120v-120h80v120h120v80H520v120h-80ZM280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM40-800v-80h131l170 360h280l156-280h91L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68.5-39t-1.5-79l54-98-144-304H40Z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                `
+        });
     } catch (error) {
         console.error("Error fetching products data from server. Error: ", error)
     }
@@ -218,7 +241,15 @@ clearCart.addEventListener('click', () => {
         if (result.isConfirmed) {
             cart = [];
             if (cartRowCont.hasChildNodes()) {
+                //logic to re-enable buttons
+                cart.forEach(each => {
+                    reEnableButton(each.id);
+                    
+                });
+                
+                //delete items from cart UI
                 cartRowCont.innerHTML = ``;
+                calcTotal()
                 totalDisplay.innerHTML = `N ${calcTotal()}`;
             }
 
@@ -255,8 +286,35 @@ categories.forEach(each => {
         displayCategory.style.transition = '1s ease-in'
         displayCategory.innerText = category
 
-        var productsCont = document.querySelector('.productsCont')
+        
         productsCont.innerHTML = ``
+        if (category == 'All') {
+            displayCategory.innerText = 'All Products'
+            products.forEach(prod => {
+                productsCont.innerHTML += `
+                <div class="productCard">
+                    <img src="${prod.img}" alt="${prod.Name} picture">
+                    <div class="productName">
+                        <p >${prod.Name}</p>
+                    </div>
+                    <div class="productCardDetailCont">
+                        <p>${prod.price}</p>
+                        <div>
+                            <i class="id" style="display: none;">${prod.id}</i>
+                            <button>
+                            <svg class="addToCart" style="fill: white; margin-top: -0.3em; margin-left: -0.1em;" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M440-600v-120H320v-80h120v-120h80v120h120v80H520v120h-80ZM280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM40-800v-80h131l170 360h280l156-280h91L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68.5-39t-1.5-79l54-98-144-304H40Z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                `
+                return                
+            });
+        }
+        
+
+
         products.forEach(prod => {
             if (prod.category == category) {
                 productsCont.innerHTML += `
