@@ -30,6 +30,5 @@
     "nodemailer": "^6.9.0",
     "nodemon": "^2.0.20",
     "session": "^0.1.0",
-    "socket.io": "^4.7.4"
   }
 }
