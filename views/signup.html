@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Foundation:wght@400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon" />
+    <link rel="stylesheet" href="css/signup.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cranshaw | sign up</title>
+    <style>
+      * {
+        font-family: "Quicksand", sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="genCont">
+      <div class="sideA">
+        <div class="sideATextCont">
+          <div class="sideCenterText">
+            <h1>CranShaw</h1>
+            <p><i>...buy it now, pay later</i></p>
+          </div>
+        </div>
+      </div>
+      <div class="sideB">
+        <h1>Sign Up</h1>
+        <form action="" id="form" onsubmit="return false"></form>
+      </div>
+    </div>
+
+    <script src="js/sweetalert2@11.js"></script>
+    <script>
+      const formData = {
+        fName: "",
+        phone: "",
+        dob: "",
+        gender: "",
+        email: "",
+        password: "",
+      };
+
+      var form = document.getElementById("form");
+
+      var formGroups = [
+        `<div class="group">
+            <label for="">Full Name</label>
+            <input type="text" onchange=" saveData('fName', val = this.value)" name="fName" placeholder="e.g Firstname Middlename Lastname" />
+            <label for="">Phone Number</label>
+            <input type="tel" onchange=" saveData('phone', val = this.value)" name="phone" placeholder="e.g 090xxxxxxxx" />
+            <div class="btnCont">
+              <button class="next" onclick="next(e = this)" >
+                <p>Next</p>
+                <svg style="fill: white;" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m600-200-57-56 184-184H80v-80h647L544-704l56-56 280 280-280 280Z"/></svg>
+              </button>
+              <p>Already registered? <br/> <a href="/login" style="color: #09a078;">Login</a></p>
+              </div>
+          </div> `,
+
+        ` <div class="group">
+            <label for="">Date of Birth</label>
+            <input type="date" onchange=" saveData('dob', val = this.value)" name="dob" />
+            <label for="">Gender</label>
+            <select  onchange=" saveData('gender', this.value)" name="gender">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+            <div class="btnCont">
+              <button class="back" onclick="back()" >
+                <svg style="fill: white;"  xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M360-200 80-480l280-280 56 56-183 184h647v80H233l184 184-57 56Z"/></svg>
+                <p>Back</p>
+              </button>
+              <button class="next" onclick="next(e = this)" >
+                <p>Next</p>
+                <svg style="fill: white;" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m600-200-57-56 184-184H80v-80h647L544-704l56-56 280 280-280 280Z"/></svg>
+              </button>
+            </div>
+          </div> `,
+
+        ` <div class="group">
+            <label for="">Email</label>
+            <input type="email"  onchange=" saveData('email', val = this.value)"  name="email" />
+            <label for="">Password</label>
+            <input type="password"  onchange=" saveData('password', val = this.value)"  name="password" />
+            <div class="btnCont">
+              <button class="back" onclick="back()" >
+                <svg style="fill: white;"  xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M360-200 80-480l280-280 56 56-183 184h647v80H233l184 184-57 56Z"/></svg>
+                <p>Back</p>
+              </button>
+              <button class="next" id="submit" onclick="submitForm(e = this)" >
+                <p>Submit</p>
+                <svg style="fill: white;" xmlns="http://www.w3.org/2000/svg" height="29" viewBox="0 -960 960 960" width="28"><path d="M268-240 42-466l57-56 170 170 56 56-57 56Zm226 0L268-466l56-57 170 170 368-368 56 57-424 424Zm0-226-57-56 198-198 57 56-198 198Z"/></svg>
+              </button>
+            </div>
+          </div> `,
+      ];
+
+      form.innerHTML = formGroups[0];
+      var count = 1;
+      function next(e) {
+        var elem1 = e.parentNode.parentNode.children[1];
+        var elem2 = e.parentNode.parentNode.children[3];
+        if (elem1.value == "") {
+          Swal.fire({
+            timer: 4000,
+            text: "Please fill out all fields.",
+            icon: "info",
+          });
+          return;
+        }
+        if (elem2.value == "") {
+          Swal.fire({
+            timer: 4000,
+            text: "Please fill out all fields.",
+            icon: "info",
+          });
+          return;
+        }
+        form.innerHTML = formGroups[count];
+        count++;
+      }
+
+      function back() {
+        count--;
+        count--;
+        if (count < 0) {
+          count = 0;
+        }
+        form.innerHTML = formGroups[count];
+      }
+
+      function saveData(data, value) {
+        switch (data) {
+          case "fName":
+            formData.fName = value;
+            break;
+          case "phone":
+            formData.phone = value;
+            break;
+          case "dob":
+            formData.dob = value;
+            break;
+          case "gender":
+            formData.gender = value;
+            break;
+          case "email":
+            formData.email = value;
+            break;
+          case "password":
+            formData.password = value;
+            break;
+
+          default:
+            break;
+        }
+      }
+
+      function submitForm() {
+        var elem1 = e.parentNode.parentNode.children[1];
+        var elem2 = e.parentNode.parentNode.children[3];
+        Swal.fire({
+          timer: 4000,
+          text: "Please fill out all fields.",
+          icon: "info",
+        });
+
+        Swal.fire({
+          timer: 4000,
+          text: "Please fill out all fields.",
+          icon: "info",
+        });
+
+        //validate phone number
+        if (/\s/g.test(formData.phone)) {
+          formData.phone = formData.phone.replace(/\s/g, "");
+        }
+
+        if (!formData.phone.startsWith(0) || formData.phone.length !== 11) {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "invalid phone number format",
+            text: "Please use correct format; e.g 090888888XX",
+            showConfirmButton: true,
+            timer: 5000,
+          });
+          return;
+        }
+
+        //validated date of birth
+        var year = new Date(formData.dob).getFullYear();
+        if (year > 2005) {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            text: "Age is too young, must be at least 18 years to sign up. Kindly change the date of birth.",
+            showConfirmButton: true,
+            timer: 5000,
+          });
+
+          return;
+        }
+
+        //validate full name
+        if (/[,.\/'-]/.test(formData.fName)) {
+          formData.fName = formData.fName.replace(/[,.\/'-]/g, "");
+        }
+        var fulName = formData.fName.split(" ");
+        if (fulName.length < 3) {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            text: "Wrong name format. Name must have: First name, Middle name and Last name separated by single spaces. e.g Okoro Charles Olamide",
+            showConfirmButton: true,
+            timer: 5000,
+          });
+          return;
+        }
+
+        var fetchOptions = {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+
+        fetch("/signup", fetchOptions)
+          .then((res) => {
+            console.log(res);
+            res.ok
+              ? Swal.fire({
+                  position: "center",
+                  icon: "success",
+                  text: "You have been successfully registered! You will be redirected to login in 5 secs...",
+                  showConfirmButton: false,
+                  timer: 5000,
+                }).then(() => {
+                  // Redirect to login page
+                  window.location.href = "/login";
+                })
+              : Swal.fire({
+                  position: "center",
+                  icon: "error",
+                  text: "Unfortunately an error occurred while we tried to register you. Please try again.",
+                  showConfirmButton: true,
+                  timer: 5000,
+                });
+          })
+          .catch((err) => console.error(err));
+      }
+    </script>
+  </body>
+</html>
