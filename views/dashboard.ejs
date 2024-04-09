@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Foundation:wght@400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CranShaw | Dashboard</title>
+</head>
+<body>
+    <div class="container">
+        <div class="sideA">
+            <div class="header">
+                <div>
+                    <img src="img/favicon.png" alt="">
+                    <h3>CranShaw</h3>
+                </div>
+                <img src="img/3135715.png" alt="">
+            </div>
+            <h1>Dashboard</h1>
+        </div>
+        <div class="sideB">
+            <div class="sideBCont">
+                <div class="box">
+                    <img src="img/wallet.png" alt="">
+                    <p>Balance: 0.00</p>
+                </div>
+
+                <div class="box" id="fundBox" onclick="displayDetails() ">
+                    <img src="img/fund.png" alt="">
+                    <p>Fund wallet</p>
+                </div>
+            </div>
+
+            <div class="sideBCont" >
+                <div class="box" onclick="showHistory()">
+                    <img src="img/history.png" alt="">
+                    <p>Order history</p>
+                </div>
+                
+                <div class="box" onclick="store()">
+                    <img src="img/store.png" alt="">
+                    <p>Store</p>
+                </div>
+            </div>
+          
+            <div class="overlay">
+                <p onclick="showHistory()" style="text-align: right; margin-right: .5rem;">
+                    <svg style="fill:  rgb(156, 50, 156); transform: scale(1.4)" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                </p>
+
+                <div class="tableCont">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Time</th>
+                                <th>Total</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#12</td>
+                                <td>22/4/24</td>
+                                <td>N 10000</td>
+                                <td class="seeAll" onclick="showOrderDetail(e = this)"><b>See all</b></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+                </div>
+                <div class="orderDetails">
+                    <p onclick="showOrderDetail(e)" style="text-align: right; margin-right: 1rem;">
+                        <svg style="fill:  rgb(156, 50, 156); transform: scale(1.4)" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                    </p>
+                   <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                   </table>
+
+                   <b style="margin-left: .6rem;">Total: N <span class="orderDetailTotal" ></span></b>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/dashboard.js"></script>
+    <script src="js/sweetalert2@11.js"></script>
+   
+</body>
+</html>
