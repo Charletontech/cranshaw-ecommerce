@@ -12,7 +12,7 @@
 
 .container {
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh + 7rem);
   background-image: url(../img/Screenshot_20240324-140345.jpg);
   background-position: center;
   background-size: cover;
