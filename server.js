@@ -37,12 +37,49 @@ app.get("/db-init", (req, res) => {
     console.log(result);
   });
 
+  var sql = "CREATE TABLE IF NOT EXISTS transactions (orderID INT AUTO_INCREMENT PRIMARY KEY, user VARCHAR(15), date VARCHAR(15), total VARCHAR(20), cart VARCHAR(65550) )  "  
+  connection.query(sql, (err, result) => {
+    if (err) throw err;
+    console.log(result);
+  });
+
   connection.end();
 });
+
 
 app.get("/", (req, res) => {
   res.render("index");
 });
+
+
+// app.get("/", (req, res) => {
+//   //res.render("index");
+//   var x = JSON.stringify([
+//     {
+//       id: 1,
+//       Name: "Nike Air",
+//       img: "img/Screenshot_20240324-140030.jpg",
+//       price: 20000,
+//       category: "Shoes",
+//       qty: 1,
+//     },
+//     {
+//       id: 2,
+//       Name: "Headphone ",
+//       img: "img/Screenshot_20240324-140030.jpg",
+//       price: 10000,
+//       category: "Shoes",
+//       qty: 2,
+//     },
+//   ])
+//   var tables = [ 'user', 'date', 'total', 'cart']
+//   var values = ['08010000000', '10/4/2024', '40000', x]
+//   var sql = ORM.insert('transactions', tables )
+//   connection.query(sql, values, (err, result) => {
+//     if (err) throw err;
+//     console.log(result);
+//   });
+// });
 
 app.get("/login", (req, res) => {
   const filePath = path.join(__dirname, "views", "login.html");
@@ -55,7 +92,7 @@ app.get("/signup", (req, res) => {
 });
 
 app.post("/signup", (req, res) => {
-  var { fName, phone, dob, gender, email, password } = req.body 
+  var { fName, phone, dob, gender, email } = req.body 
  
   //split full name
   var [firstN, middleN, lastN] = [...fName.split(' ')]
@@ -65,8 +102,8 @@ app.post("/signup", (req, res) => {
   hash.update(dob);
   const hashedPassword = hash.digest('hex');
 
-   //logic to convert date to required format
-  dob = new Date(dob).toISOString();
+  //logic to convert date to required format
+  var convertedDate = new Date(dob).toISOString();
 
   //logic to check if user already exists
   checkUser() 
@@ -75,9 +112,10 @@ app.post("/signup", (req, res) => {
     connection.query(sql, (err, result) => {
       if (err) throw err;
       if (result.length == 0) {
-        generateToken();
+        addUserToDatabase('0056730449')
+        //generateToken();
       } else {
-        req.send('User already exist! Please log in.')
+        res.send('User already exist! Please log in.')
       }
     })
   }
@@ -108,7 +146,7 @@ app.post("/signup", (req, res) => {
         lastName: lastN ,
         middleName: middleN ,
         gender: gender ,
-        dateOfBirth: dob,
+        dateOfBirth: convertedDate,
         productCode: 214,
         email: email,
         type: 1
@@ -143,21 +181,22 @@ app.post('/login', (req,res) => {
   var {phone, password} = req.body;
   var sql = ORM.select('*', 'users');
   const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
-
   connection.query(sql, (err, result) => {
+    if (err) throw err
     var user = result.find(each => {
-      return each.phone == phone && each.password == each.hashedPassword
+      return each.phone == phone && each.password == hashedPassword
     }) 
-
+    
     if (user) {
-      //res.render('dashboard', {user})
-      res.send(user)
+      var sql = ORM.select('*','transactions', 'user', user.phone)
+      connection.query(sql, (err, result) => {
+        res.render('dashboard', {user, result})
+      })
     } else {
       res.send('Bad credentials: Your email or password is not correct.')
     }
    })
 })
-
 
 app.get('/dashboard', (req, res) => {
   res.render('dashboard')
@@ -194,6 +233,23 @@ app.get("/get-all-products", (req, res) => {
 
   res.json(products);
 });
+
+app.post('/transaction-history', (req, res) => {
+  var userId = req.body.userId
+  var sql = ORM.select('*', 'transactions', 'user', userId)
+  connection.query(sql, (err, result) => {
+    if (err) throw err
+    res.json(result)
+  })
+})
+
+
+app.post('/checkout', (req, res) => {
+  console.log(req.body);
+  res.status(200).json('ok')
+})
+
+
 
 var uni = "\u{1F680}";
 app.listen(5000, () => {
