@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link 
+      href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Foundation:wght@400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    
+    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="css/login.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,13 +17,13 @@
   <body>
     <div class="container">
       <div class="overlay">
-        <form action="">
+        <form action="/login" method="post">
           <h1>Welcome back!</h1>
 
-          <input type="tel" placeholder="Phone number" />
+          <input type="tel" placeholder="Phone number" name="phone" />
           <br />
 
-          <input type="password" placeholder="Password" />
+          <input type="date" placeholder="Password" name="password" />
           <button>Login</button>
           <p>
             Don't have an account?
@@ -24,10 +32,10 @@
               style="
                 color: rgb(255, 136, 0);
                 text-shadow: 0px 0px 4px rgba(24, 24, 24, 0.774);
-                font-size: 1.2em;
+                font-size: 1.05em;
               "
-              ><b> Sign up</b></a
-            >
+              ><b> Sign up</b>
+            </a>
           </p>
         </form>
 
@@ -37,5 +45,7 @@
         </div>
       </div>
     </div>
+    <script src="js/login.js"></script>
+    <script src="js/axios.min.js"></script>
   </body>
 </html>
