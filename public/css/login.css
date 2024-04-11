@@ -4,6 +4,7 @@
   text-decoration: none;
   list-style: none;
   box-sizing: border-box;
+  font-family: "Quicksand", sans-serif;
 }
 
 :root {
@@ -12,7 +13,8 @@
 
 .container {
   width: 100vw;
-  height: calc(100vh + 7rem);
+  height: 100vh;
+  /* background-image: url(  https://plus.unsplash.com/premium_photo-1661381007965-b21e0fb0681b?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTd8fGJsYWNrJTIwcGVyc29uJTIwc2hvcHBpbmclMjBpbiUyMHN1cGVyJTIwbWFya2V0fGVufDB8fDB8fHww); */
   background-image: url(../img/Screenshot_20240324-140345.jpg);
   background-position: center;
   background-size: cover;
@@ -35,14 +37,16 @@
 form {
   color: white;
   width: 80%;
-  height: 30%;
+  height: 85%;
   text-align: center;
+  padding-top: 40%;
 }
+
 
 form h1 {
   text-align: center;
   margin-bottom: 1rem;
-  font-size: 2.5em;
+  font-size: 2.3em;
 }
 
 input {
@@ -73,12 +77,12 @@ button {
   font-size: 1em;
 }
 
+
 .faviconCont {
-  position: absolute;
-  bottom: 4rem;
   width: 100%;
   text-align: center;
   color: white;
+  height: 15%;
 }
 
 .faviconCont img {
@@ -92,5 +96,15 @@ button {
 @media (min-width: 720px) {
   form {
     width: 30%;
+    padding-top: 15%;
+  }
+}
+
+
+
+@media (min-width: 500px) and (max-width: 750px) {
+  form {
+    width: 60%;
+    padding-top: 30%;
   }
 }
