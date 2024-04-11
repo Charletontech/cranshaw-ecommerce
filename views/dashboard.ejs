@@ -1,106 +1,113 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Foundation:wght@400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Quicksand:wght@300..700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
+let userId;
+let orderHistoryData = [];
+window.addEventListener("DOMContentLoaded", async () => {
+  let dataSpace = document.getElementById("dataSpace").innerHTML;
+  dataSpace = JSON.parse(dataSpace);
+  userId = {phone: dataSpace.phone, balance: dataSpace.balance};
+  //logic to handle local session
+  if (!localStorage.getItem("cranshawUser")) {
+    var date = new Date();
+    var hour = date.getHours() + 1;
+    if (hour > 23) {
+      hour = 0;
+    }
+    var expiry = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      hour,
+      date.getMinutes()
+    );
+    localStorage.setItem(
+      "cranshawUser",
+      JSON.stringify({ userId: userId, expiry: expiry })
+    );
+  } else {
+    console.log("session exists");
+  }
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CranShaw | Dashboard</title>
-</head>
-<body>
-    <div class="container">
-        <div class="sideA">
-            <div class="header">
-                <div>
-                    <img src="img/favicon.png" alt="">
-                    <h3>CranShaw</h3>
-                </div>
-                <img src="img/3135715.png" alt="">
-            </div>
-            <h1>Dashboard</h1>
+  //logic to get transaction history
+  var response = await axios.post('/transaction-history', {userId: userId})
+  var x = response.data
+  x.forEach(each => {
+    orderHistoryData.push(each)
+  })
+});
+
+
+
+
+
+//logic for fund wallet
+function displayDetails() {
+  Swal.fire({
+    position: "center",
+    icon: "info",
+    title: "Fund wallet",
+    html: `
+        <div style="text-align: center;">
+            <p>Make a transfer into the following account to fund your wallet</p>
+            <br> 
+            <b style="color: #7066e0;">Account number</b>
+            <br>
+            <p>005229495</p>
+            <br>
+            <b  style="color: #7066e0;">Account Name</b>
+            <p>John Doe</p>
+            <br>
+            <b  style="color: #7066e0;">Bank</b>
+            <br>
+            <p>Hope PSB</p>
         </div>
-        <div class="sideB">
-            <div class="sideBCont">
-                <div class="box">
-                    <img src="img/wallet.png" alt="">
-                    <p>Balance: 0.00</p>
-                </div>
+        `,
+    showConfirmButton: true,
+  });
+}
 
-                <div class="box" id="fundBox" onclick="displayDetails() ">
-                    <img src="img/fund.png" alt="">
-                    <p>Fund wallet</p>
-                </div>
-            </div>
+//logic to show history
+var overlay = document.querySelector(".overlay");
+function showHistory() {
+  overlay.classList.toggle("showOverlay");
+}
 
-            <div class="sideBCont" >
-                <div class="box" onclick="showHistory()">
-                    <img src="img/history.png" alt="">
-                    <p>Order history</p>
-                </div>
-                
-                <div class="box" onclick="store()">
-                    <img src="img/store.png" alt="">
-                    <p>Store</p>
-                </div>
-            </div>
-          
-            <div class="overlay">
-                <p onclick="showHistory()" style="text-align: right; margin-right: .5rem;">
-                    <svg style="fill:  rgb(156, 50, 156); transform: scale(1.4)" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-                </p>
+//logic to show order details
+var orderDetails = document.querySelector(".orderDetails");
+var orderDetailRow = document.querySelector(".orderDetails table tbody");
+var orderDetailTotal = document.querySelector(".orderDetailTotal");
+function showOrderDetail(e) {
+  orderDetails.classList.toggle("showOrderDetails");
+  var id = e.parentNode.children[0].innerText;
+  id = id.slice(1);
+  var foundProd = orderHistoryData.find((each) => {
+    return each.orderID == id;
+  });
+  if (!foundProd) {
+    alert("not found");
+    return;
+  }
+  orderDetailRow.innerHTML = ``;
+  var cart = JSON.parse(foundProd.cart)
+  cart.forEach((each) => {
+    var amount = parseFloat(each.price) * parseFloat(each.qty);
+    orderDetailRow.innerHTML += `
+            <tr>
+                <td>${each.Name}</td>
+                <td>${each.qty}</td>
+                <td>N ${amount}</td>
+            </tr>
+        `;
+  });
 
-                <div class="tableCont">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Time</th>
-                                <th>Total</th>
-                                <th>Details</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>#12</td>
-                                <td>22/4/24</td>
-                                <td>N 10000</td>
-                                <td class="seeAll" onclick="showOrderDetail(e = this)"><b>See all</b></td>
-                            </tr>
-                           
-                        </tbody>
-                    </table>
-                </div>
-                <div class="orderDetails">
-                    <p onclick="showOrderDetail(e)" style="text-align: right; margin-right: 1rem;">
-                        <svg style="fill:  rgb(156, 50, 156); transform: scale(1.4)" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-                    </p>
-                   <table>
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Quantity</th>
-                            <th>Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                    </tbody>
-                   </table>
+  orderDetailTotal.innerHTML = foundProd.total;
+}
 
-                   <b style="margin-left: .6rem;">Total: N <span class="orderDetailTotal" ></span></b>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="js/dashboard.js"></script>
-    <script src="js/sweetalert2@11.js"></script>
-   
-</body>
-</html>
+//go to store
+function store() {
+  Swal.fire({
+    position: "center",
+    icon: "info",
+    text: "Please wait while we take you to our store...",
+    showConfirmButton: false,
+  });
+  window.location.href = "/";
+}
