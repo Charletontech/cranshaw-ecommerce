@@ -43,7 +43,6 @@
         dob: "",
         gender: "",
         email: "",
-        password: "",
       };
 
       var form = document.getElementById("form");
@@ -86,8 +85,6 @@
         ` <div class="group">
             <label for="">Email</label>
             <input type="email"  onchange=" saveData('email', val = this.value)"  name="email" />
-            <label for="">Password</label>
-            <input type="password"  onchange=" saveData('password', val = this.value)"  name="password" />
             <div class="btnCont">
               <button class="back" onclick="back()" >
                 <svg style="fill: white;"  xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M360-200 80-480l280-280 56 56-183 184h647v80H233l184 184-57 56Z"/></svg>
@@ -104,6 +101,7 @@
       form.innerHTML = formGroups[0];
       var count = 1;
       function next(e) {
+        
         var elem1 = e.parentNode.parentNode.children[1];
         var elem2 = e.parentNode.parentNode.children[3];
         if (elem1.value == "") {
@@ -152,10 +150,6 @@
           case "email":
             formData.email = value;
             break;
-          case "password":
-            formData.password = value;
-            break;
-
           default:
             break;
         }
@@ -254,7 +248,7 @@
                 });
           })
           .catch((err) => console.error(err));
-      }
+      } 
     </script>
   </body>
 </html>
