@@ -4,7 +4,8 @@
     list-style: none;
     text-decoration: none;
     box-sizing: border-box;
-     font-family: "Edu NSW ACT Foundation", cursive;
+    font-family: "Quicksand", sans-serif;
+    
 }
 
 :root{
@@ -214,6 +215,12 @@ body{
     border-radius: 10rem;
 }
 
+.cartFooter div:hover{
+    background-color: white;
+    color:#0fbe90 ;
+    border: 1px solid #0fbe90;
+}
+
 /* shopping cart styling ends */
 
 
@@ -349,10 +356,12 @@ aside{
 
 .heroText div p{
     font-size: 1.4rem;
-    letter-spacing: 8px;
+    letter-spacing: 9px;
     font-size: 1.7em;
     font-weight: bold;
+    transition: 1s ease-in;
 }
+
 
 .heroTextHeader{
     display: flex; 
@@ -426,7 +435,7 @@ aside{
 
 .productCard{
     background-color: white;
-    height: 14rem;
+    height: 15rem;
     width: 48%;
     border-radius: 10px;
     overflow: hidden;
@@ -533,6 +542,9 @@ footer h4{
 
 /* Desktop design */
 @media screen and (min-width: 700px) {
+    *{
+        font-size: 1.06em;
+    }
         
     .main{
         width: 85%;
@@ -577,6 +589,7 @@ footer h4{
 
     .productCard{
         width: 32%;
+        height: 17rem;
     }
 
     .categories ul {
@@ -588,6 +601,11 @@ footer h4{
 .footerRow{
     display: flex;
     gap: 20px;
+}
+
+
+.footer-sideB p{
+    line-height: 2rem;
 }
 
 
