@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Foundation:wght@400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
+
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout | CranShaw</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-family: "Quicksand", sans-serif;
+      }
+
+      .container {
+        width: 100%;
+        height: 100vh;
+        display: block;
+        margin: 10vh auto;
+        text-align: center;
+      }
+
+      .sideB {
+        width: 100%;
+        height: 25%;
+      }
+
+      .sideA {
+        width: 100%;
+        height: 75%;
+      }
+
+      .sideA img {
+        width: 16rem;
+        margin: 3rem auto;
+        height: 16rem;
+        display: block;
+        margin-bottom: 1rem;
+      }
+
+      .sideB {
+        background-color: rgb(78, 190, 231);
+      }
+
+      button {
+        background-color: rgb(78, 190, 231);
+        font-weight: bold;
+        color: white;
+        border: 1px solid rgb(78, 190, 231);
+        padding: 8px 16px;
+        border-radius: 10rem;
+        margin-top: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sideA">
+        <h2>Login Successful!</h2>
+        <img
+          src="https://img.freepik.com/premium-vector/online-shop-cart-checkout-product-gift-box-shopping-bag-discount-illustration-vector-cartoon-icon_679085-34.jpg?w=740"
+          alt=""
+        />
+        <button id="completeOrder" onclick="completePayment()">Complete payment</button>
+      </div>
+      <div class="sideB">
+        <?xml version="1.0" standalone="no"?><svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1440 320"
+        >
+          <path
+            fill="#fff"
+            fill-opacity="1"
+            d="M0,256L48,256C96,256,192,256,288,250.7C384,245,480,235,576,208C672,181,768,139,864,144C960,149,1056,203,1152,208C1248,213,1344,171,1392,149.3L1440,128L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"
+          ></path>
+        </svg>
+      </div>
+    </div>
+    <div class="dataSpace" style="display: none;"><%= userId %></div>
+    <script src="js/axios.min.js"></script>
+    <script src="js/sweetalert2@11.js"></script>
+    <script>
+      //get user balance
+      var userBalance = 0;
+      var id = { 
+          userId: document.querySelector('.dataSpace').innerText
+        };
+      window.addEventListener('DOMContentLoaded', async () => {
+       
+        var fetchOptions = {
+          method: "POST",
+          body: JSON.stringify(id),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        };
+
+        await fetch("/get-user-balance", fetchOptions)
+          .then((res) => res.json())
+          .then((data) => {
+            userBalance += parseFloat(data.balance)
+            
+          })
+          .catch((err) => console.error(err));
+      })
+
+      function completePayment() {
+        var $cartSession = localStorage.getItem("cranshawCart");
+        $cartSession = JSON.parse($cartSession)
+
+        // calculate total
+        var total = calcTotal();
+        function calcTotal() {
+          var total = 0;
+          $cartSession.forEach(({ price, qty }) => {
+            var subTotal = price * qty;
+            total = total + subTotal;
+          });
+          total < 0 ? (total = 0) : total;
+          return total;
+        }
+
+        //check if balance is enough
+        if (parseFloat(total) <= parseFloat(userBalance) ) {
+          console.log(id, $cartSession);
+          var fetchOptions = {
+          method: "POST",
+          body: JSON.stringify({ id: id.userId, cart: $cartSession} ),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        };
+
+        fetch("/checkout", fetchOptions)
+          .then((res) => {
+            if (res.status === 200) {
+              Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Order sent!",
+                text: "We have received your order. We will contact you soon. Thanks for your patronage.",
+                showConfirmButton: true,
+              });
+              localStorage.removeItem("cranshawCart")
+            }
+          })
+          .catch((err) => console.error(err));
+      
+        } else {
+          Swal.fire({
+            icon: "warning",
+            title: "Insufficient Funds!",
+            text: "Dear esteemed customer, you do not have sufficient funds in your wallet to complete this transaction. Items in your cart have been cleared. Please fund your wallet and try again.",
+            showConfirmButton: true,
+            confirmButtonText: "Take me to dashboard",
+            showCancelButton: true,
+          }).then(() => {
+            localStorage.removeItem("cranshawCart")
+            window.location.href = "/login";
+          })
+        }
+      }
+    </script>
+  </body>
+</html>
