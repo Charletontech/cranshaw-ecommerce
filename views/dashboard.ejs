@@ -30,7 +30,7 @@
             <div class="sideBCont">
                 <div class="box">
                     <img src="img/wallet.png" alt="">
-                    <p>Balance: 0.00</p>
+                    <p>Balance: <%=user.balance %></p>
                 </div>
 
                 <div class="box" id="fundBox" onclick="displayDetails() ">
@@ -105,6 +105,6 @@
     <div id="dataSpace" style="display: none;"><%= JSON.stringify(user) %></div>
     <script src="js/dashboard.js"></script>
     <script src="js/sweetalert2@11.js"></script>
-    <script src="js/axios.min.js"></script>
+    <script src="js/axios.min.js"></script> 
 </body>
 </html>
