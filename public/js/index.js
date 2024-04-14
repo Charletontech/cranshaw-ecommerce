@@ -81,7 +81,7 @@ function addProd(foundProd, currentBtn) {
   }
   cart.push(foundProd);
   Swal.fire({
-    position: "top",
+    position: "center",
     icon: "success",
     text: "Item added!",
     showConfirmButton: false,
@@ -149,6 +149,7 @@ function displayCart(foundProd, total) {
       cart.forEach((item) => {
         if (id == item.id) {
           item.qty -= 1;
+          item.qty < 0 ? (item.qty = 0) : item.qty;
           qty.innerText = item.qty;
           calcTotal();
           totalDisplay.innerHTML = `N ${calcTotal()}`;
@@ -213,6 +214,7 @@ function calcTotal() {
     var subTotal = price * qty;
     total = total + subTotal;
   });
+  total < 0 ? (total = 0) : total;
   return total;
 }
 
@@ -229,7 +231,8 @@ clearCart.addEventListener("click", () => {
     confirmButtonText: "Clear cart!",
   }).then((result) => {
     if (result.isConfirmed) {
-      cart = [];
+      cart.splice(0, cart.length);
+      calcTotal();
       if (cartRowCont.hasChildNodes()) {
         //logic to re-enable buttons
         cart.forEach((each) => {
@@ -252,11 +255,6 @@ clearCart.addEventListener("click", () => {
       });
     }
   });
-
-  // while (cartRowCont.hasChildNodes) {
-  //     cartRowCont.removeChild
-  // }
-  // cartRowCont.innerHTML += ` `;
 });
 
 //logic to change product category
@@ -352,85 +350,105 @@ function removeClass() {
 
 //logic to check login session
 function noSession() {
-    localStorage.setItem("cranshawCart", JSON.stringify(cart))
-    Swal.fire({
-      position: "center",
-      icon: "info",
-      title: "Login Needed",
-      text: "We found out you are not logged in on this device. Please login to complete your purchase. Don't worry the items in your cart have been saved.",
-      showConfirmButton: true,
-      confirmButtonText: "Log me in!"
-    }).then(() => {
-      window.location.href = "/login";
-    });
+  localStorage.setItem("cranshawCart", JSON.stringify(cart));
+  Swal.fire({
+    position: "center",
+    icon: "info",
+    title: "Login Needed",
+    text: "We found out you are not logged in on this device. Please login to complete your purchase. Don't worry the items in your cart have been saved.",
+    showConfirmButton: true,
+    confirmButtonText: "Log me in!",
+  }).then(() => {
+    window.location.href = "/login-to-create-session";
+  });
 }
 
-function checkout() {
-    
-    if (cart.length == 0) {
-        Swal.fire({
-            position: "center",
-            icon: "warning",
-            title: "Cart Empty!",
-            text: "You need to add items to your cart to checkout"
-        })
-        return
-    }
+function checkout(e) {
+  e.innerHTML = `Please wait...`
+  if (cart.length == 0) {
+    e.innerHTML = `Checkout`
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: "Cart Empty!",
+      text: "You need to add items to your cart to checkout",
+    });
+    return;
+  }
 
   var $session = localStorage.getItem("cranshawUser");
   if (!$session) {
-    noSession() 
+    noSession();
   } else {
-    var getExpiry = JSON.parse($session).expiry
-    var expiryDate = new Date(getExpiry).getTime()
-    var currentDate = new Date().getTime()
+    var userSessionId = JSON.parse($session).userId
+    var getExpiry = JSON.parse($session).expiry;
+    var expiryDate = new Date(getExpiry).getTime();
+    var currentDate = new Date().getTime();
     if (currentDate > expiryDate) {
-        console.log('expired');
-        localStorage.removeItem("cranshawUser")
-        noSession() 
+      console.log("expired");
+      localStorage.removeItem("cranshawUser");
+      noSession();
     } else {
-        $session = JSON.parse($session)
-        parseFloat($session.userId.balance) <  calcTotal() ?
-        Swal.fire({
+      $session = JSON.parse($session);
+      //check if user's balance is enough
+      var userBalance;
+      async function getUserBalance(x) {
+        var fetchOptions = {
+          method: "POST",
+          body: JSON.stringify(x),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        };
+
+        await fetch("/get-user-balance", fetchOptions)
+          .then((res) => res.json())
+          .then((data) => (userBalance = data))
+          .catch((err) => console.error(err));
+      }
+      getUserBalance($session);
+
+      parseFloat(userBalance) < calcTotal()
+        ? Swal.fire({
             icon: "warning",
             title: "Insufficient Funds!",
             text: "Dear esteemed customer, you do not have sufficient funds in your wallet to complete this transaction. Please fund your wallet and try again.",
             showConfirmButton: true,
-            confirmButtonText: "Take me to dashbaord",
+            confirmButtonText: "Take me to dashboard",
             showCancelButton: true,
-        })
-        .then(() => {
-            window.location.href = '/login'
-        })
-        :
-        fetch('/checkout', {
-            method: 'POST',
-            body: JSON.stringify(cart),
+          }).then(() => {
+            window.location.href = "/login";
+          })
+        : fetch("/checkout", {
+            method: "POST",
+            body: JSON.stringify({id: userSessionId, cart: cart}),
             headers: {
-                "Content-Type": "application/json",
-            }
-        })
-        .then(res => {
-            if (res.ok) {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((res) => {
+              if (res.status === 200) {
                 Swal.fire({
-                    icon: "success",
-                    title: "Successful!",
-                    text: "Order successfully sent.",
-                    timer: 4000
-                })
-                cart.splice(0, cart.length)
-            } else {
+                  icon: "success",
+                  title: "Successful!",
+                  text: "Order successfully sent.",
+                  timer: 4000,
+                });
+                cart.splice(0, cart.length);
+                cartRowCont.innerHTML = ``;
+                totalDisplay.innerHTML = 0;
+              } else {
                 Swal.fire({
-                    icon: "error",
-                    title: "Error!",
-                    text: "An error occured.",
-                    showConfirmButton: true,
-                })
-            }
-        })
-        .catch(err => {
-            console.error(err);
-        })
+                  icon: "error",
+                  title: "Error!",
+                  text: "An error occurred. You may have insufficient funds.",
+                  showConfirmButton: true,
+                });
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+            });
     }
   }
 }
