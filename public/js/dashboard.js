@@ -1,9 +1,9 @@
 let userId;
 let orderHistoryData = [];
+let dataSpace = document.getElementById("dataSpace").innerHTML;
+dataSpace = JSON.parse(dataSpace);
 window.addEventListener("DOMContentLoaded", async () => {
-  let dataSpace = document.getElementById("dataSpace").innerHTML;
-  dataSpace = JSON.parse(dataSpace);
-  userId = {phone: dataSpace.phone, balance: dataSpace.balance};
+  userId = dataSpace.phone;
   //logic to handle local session
   if (!localStorage.getItem("cranshawUser")) {
     var date = new Date();
@@ -33,7 +33,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     orderHistoryData.push(each)
   })
 });
-console.log(orderHistoryData);
+
 
 
 //logic for fund wallet
@@ -48,10 +48,10 @@ function displayDetails() {
             <br> 
             <b style="color: #7066e0;">Account number</b>
             <br>
-            <p>005229495</p>
+            <p> ${dataSpace.account} </p>
             <br>
             <b  style="color: #7066e0;">Account Name</b>
-            <p>John Doe</p>
+            <p>${dataSpace.fullName}</p>
             <br>
             <b  style="color: #7066e0;">Bank</b>
             <br>
