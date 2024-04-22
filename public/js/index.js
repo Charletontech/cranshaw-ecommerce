@@ -37,7 +37,7 @@ window.addEventListener("DOMContentLoaded", async () => {
                         <p >${each.Name}</p>
                     </div>
                     <div class="productCardDetailCont">
-                        <p>${each.price}</p>
+                        <p>N${each.price}</p>
                         <div>
                             <i class="id" style="display: none;">${each.id}</i>
                             <button>
@@ -131,6 +131,7 @@ function displayCart(foundProd, total) {
     item.addEventListener("click", function () {
       cart.forEach((item) => {
         if (id == item.id) {
+          item.qty = parseFloat(item.qty);
           item.qty += 1;
           qty.innerText = item.qty;
           calcTotal();
