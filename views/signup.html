@@ -155,8 +155,8 @@
         }
       }
 
-      function submitForm() {
-        e.target.innerHTML = 'Sending...'
+      function submitForm(e) {
+        e.innerHTML = 'Sending...'
         var elem1 = e.parentNode.parentNode.children[1];
         if (elem1.value == "") {
           Swal.fire({
