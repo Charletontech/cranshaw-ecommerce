@@ -12,7 +12,9 @@ const path = require("path");
 const { MongoClient } = require("mongodb");
 const ORM = require("./CharlieDB");
 const axios = require("axios");
-const { log } = require("console");
+const formidable = require('formidable');
+const cloudinary = require('cloudinary').v2;
+
 require("dotenv").config();
 
 const app = express();
@@ -22,24 +24,24 @@ app.use(bodyParser.urlencoded({ extended: true })); // Use bodyParser to parse f
 app.use(cookieParser());
 app.use(bodyParser.json());
 
+
+
 const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  port: 3306,
-  database: "cranshaw",
+  host: `${process.env.HOST}`,
+  user: `${process.env.USER}`,
+  password: `${process.env.PASSWORD}`,
+  port: `${process.env.PORT}`,
+  database: `${process.env.DATABASE}`,
 });
 
-// const connection = mysql.createConnection({
-//   host: `${process.env.DB_HOST}`,
-//   user: `${process.env.DB_USER}`,
-//   password: `${process.env.DB_PASSWORD}`,
-//   port: `${process.env.DB_PORT}`,
-//   database:  `${process.env.DB_DATABASE}`,
-//   ssl: {
-//     ca: `${process.env.DB_SSL_CA}`
-//   }
-// });
+
+// Cloudinary configuration
+cloudinary.config({
+  cloud_name: `${process.env.CLOUD_NAME}`,
+  api_key: `${process.env.API_KEY}`,
+  api_secret: `${process.env.API_SECRET}`,
+});
+
 
 app.get("/db-init", (req, res) => {
   var sql =
@@ -56,7 +58,16 @@ app.get("/db-init", (req, res) => {
     console.log(result);
   });
 
-  connection.end();
+
+  var sql =
+    "CREATE TABLE IF NOT EXISTS products (id INT AUTO_INCREMENT PRIMARY KEY, Name VARCHAR(255), img VARCHAR(255), price VARCHAR(255), category VARCHAR(255), qty VARCHAR(255) )";
+  connection.query(sql, (err, result) => {
+    if (err) throw err;
+    console.log(result);
+  });
+  
+  // connection.end();
+  res.send("Database initialization completed");
 });
 
 app.get("/", (req, res) => {
@@ -120,7 +131,6 @@ app.post("/signup", (req, res) => {
         "http://196.46.20.83:3021/clients/v1/auth/_login",
         payLoad
       );
-      // console.log(response.data.token);
       generateWalletAccount(response.data.token);
     } catch (error) {
       console.error("Error generating token:", error);
@@ -202,8 +212,10 @@ app.post("/signup", (req, res) => {
   }
 });
 
+
+
 app.post("/login", (req, res) => {
-  var { phone, password } = req.body;
+  var { phone, password } = req.body; 
   var sql = ORM.select("*", "users");
   const hashedPassword = crypto
     .createHash("sha256")
@@ -219,8 +231,9 @@ app.post("/login", (req, res) => {
       var sql = ORM.select("*", "transactions", "user", user.phone);
       connection.query(sql, (err, result) => {
         res.render("dashboard", { user, result });
-        console.log(result);
       });
+    } else if (phone ==  `${process.env.ADMIN_PHONE}` && password == `${process.env.ADMIN_PASS}`) {
+      res.redirect('/admin')
     } else {
       res.send("Bad credentials: Your email or password is not correct.");
     }
@@ -241,25 +254,13 @@ app.get("/get-all-products", (req, res) => {
       category: "Shoes",
       qty: 1,
     },
-    {
-      id: 2,
-      Name: "Headphone Pro",
-      img: "img/Screenshot_20240324-135928.jpg",
-      price: "N 15,000",
-      category: "Gadgets",
-      qty: 1,
-    },
-    {
-      id: 3,
-      Name: "Headphone Max",
-      img: "img/Screenshot_20240324-135928.jpg",
-      price: "N 20,000",
-      category: "Gadgets",
-      qty: 1,
-    },
   ];
 
-  res.json(products);
+  var sql = ORM.select('*', 'products');
+  connection.query(sql, (err, result) => {
+    if (err) throw err;
+    res.json(result);
+  })
 });
 
 app.post("/transaction-history", (req, res) => {
@@ -366,6 +367,56 @@ app.post("/create-checkout-session", (req, res) => {
 
   
 });
+
+
+//admin routes
+app.get('/admin', (req, res) => {
+  const filePath = path.join(__dirname, "views", "admin.html");
+  res.sendFile(filePath);
+})
+
+
+app.post('/add-product', (req, res) => {
+  const form = new formidable.IncomingForm();
+
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
+      console.error('Error parsing form:', err);
+      res.status(500).send('Internal Server Error (formidable)');
+      return;
+    }
+  
+    try {
+      const result = await cloudinary.uploader.upload(files.productImage.filepath, {
+        fetch_format: 'auto',
+        folder: 'cranshaw',
+        quality: 'auto'
+      });
+
+      var productImageUrl = result.secure_url;
+      var { productName, price, category, qty } = fields;
+      var sql = ORM.insert('products', ['Name', 'img', 'price', 'category', 'qty'])
+      connection.query(sql, [productName, productImageUrl, price, category, qty ], (err, result) => {
+        if (err) throw err;
+        console.log(result);
+        res.sendStatus(200);
+      })
+
+      // The optimized image URL will be available in result.secure_url
+      console.log('Uploaded image URL:', result.secure_url);
+      // Handle other form fields as needed
+      console.log('Other form fields:', fields);
+
+    } catch (error) {
+      console.error('Error uploading image to Cloudinary:', error);
+      res.status(500).send('Internal Server Error (Cloudinary)');
+    }
+  });
+});
+
+
+
+
 
 
 
