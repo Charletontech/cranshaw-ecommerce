@@ -422,6 +422,6 @@ app.post('/add-product', (req, res) => {
 
 
 var uni = "\u{1F680}";
-app.listen(5000, () => {
+app.listen(3306, () => {
   console.log(`Cranshaw at port 5000...${uni}`);
 });
