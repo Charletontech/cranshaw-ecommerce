@@ -371,8 +371,13 @@ app.post("/create-checkout-session", (req, res) => {
 
 //admin routes
 app.get('/admin', (req, res) => {
-  const filePath = path.join(__dirname, "views", "admin.html");
-  res.sendFile(filePath);
+  var allTransactions = [];
+  var sql = ORM.select('*','transactions')
+  connection.query(sql, (err, result) => {
+    if (err) throw err;
+    allTransactions = result
+    res.render('admin', {allTransactions})
+  })
 })
 
 
