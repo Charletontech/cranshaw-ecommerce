@@ -1,0 +1,26 @@
+*{
+    padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    text-decoration: none;
+    list-style: none;
+    /* background-color: yellow; */
+  }
+
+
+  .gen-container{
+    width: 95%;
+    display: block;
+    margin: auto;
+    padding: 1rem;
+  }
+
+  table{
+    width: 80%;
+    display: block;
+    margin: auto;
+  }
+
+ .hideContent{
+  display: none;
+ }
