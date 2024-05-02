@@ -54,11 +54,10 @@ const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
     var genContainer = document.querySelector('.gen-container');
     const order = document.getElementById('order')
     const productForm = document.getElementById('productForm')
-    const menuContents = [order, productForm];
+    const customers = document.getElementById('customers')
+    const menuContents = [order, productForm, customers];
 
     function changeMenu(selectedContent) {
-      // genContainer.innerHTML = ``;
-      // genContainer.innerHTML = menuContent.innerHTML;
       menuContents.forEach(each => {
         if (each == selectedContent) {
           each.style.display = 'initial'
@@ -93,3 +92,12 @@ const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
         })
       })
     });
+
+
+  // logic to debit user
+  var debitBtn = document.getElementById('debitBtn')
+  debitBtn.addEventListener('click', (e) => {
+    var user = e.target.parentElement.parentElement.children[3].innerHTML;
+    var response = axios.post('/debit-user', {user: user})
+    console.log(response.data);
+  })
