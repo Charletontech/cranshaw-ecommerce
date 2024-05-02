@@ -380,7 +380,7 @@ app.get('/admin', (req, res) => {
    connection.query(sql, (err, result2) => {
     var users = result2
     if (err) throw err;
-    res.render('admin', {allTransactions},  {users})
+    res.render('admin', {allTransactions, users})
    })
   })
 })
