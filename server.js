@@ -376,7 +376,12 @@ app.get('/admin', (req, res) => {
   connection.query(sql, (err, result) => {
     if (err) throw err;
     allTransactions = result
-    res.render('admin', {allTransactions})
+    var sql = ORM.select('*','users')
+   connection.query(sql, (err, result2) => {
+    var users = result2
+    if (err) throw err;
+    res.render('admin', {allTransactions},  {users})
+   })
   })
 })
 
