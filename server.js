@@ -377,12 +377,16 @@ app.get('/admin', (req, res) => {
     if (err) throw err;
     allTransactions = result
     var sql = ORM.select('*','users')
-   connection.query(sql, (err, result2) => {
-    var users = result2
-    if (err) throw err;
-     console.log(users)
-    res.render('admin', {allTransactions, users})
-   })
+    connection.query(sql, (err, result2) => {
+      if (err) throw err;
+      users = result2
+      var sql = ORM.select('*','products')
+      connection.query(sql, (err, result3) => {
+        if (err) throw err;
+        products = result3
+        res.render('admin', {allTransactions, users, products})
+      })
+    })
   })
 })
 
@@ -427,6 +431,60 @@ app.post('/add-product', (req, res) => {
 
 
 
+app.post('/edit-product', (req, res) => {
+  const form = new formidable.IncomingForm();
+
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
+      console.error('Error parsing edit form:', err);
+      res.status(500).send('Internal Server Error (formidable)');
+      return;
+    }
+    var { productName, price, category, id } = fields;
+    
+
+   for (const key in fields) {
+    if (Object.hasOwnProperty.call(fields, key)) {
+      const element = fields[key];
+      if (element == '') {
+        console.log('reach');
+        res.sendStatus(500)
+        return
+      }
+    }
+   }
+
+    if (files.productImage.size === 0) {
+      var sql = `UPDATE products SET Name = '${productName}', price = '${price}', category = '${category}' WHERE id = '${id}' `
+      connection.query(sql, (err, result) => {
+        if (err) throw err;
+        console.log(result);
+        res.sendStatus(200);
+      })
+    } else {
+      try {
+        const result = await cloudinary.uploader.upload(files.productImage.filepath, {
+          fetch_format: 'auto',
+          folder: 'cranshaw',
+          quality: 'auto'
+        });
+  
+        var productImageUrl = result.secure_url;
+        var { productName, price, category, id } = fields;
+        var sql = `UPDATE products SET Name = '${productName}', price = '${price}', category = '${category}', img = '${productImageUrl}'  WHERE id = '${id}' `
+        connection.query(sql, (err, result) => {
+          if (err) throw err;
+          console.log(result);
+          res.sendStatus(200);
+        })
+  
+      } catch (error) {
+        console.error('Error uploading image to Cloudinary:', error);
+        res.status(500).send('Internal Server Error (Cloudinary)');
+      }
+    }
+  })
+})
 
 
 
