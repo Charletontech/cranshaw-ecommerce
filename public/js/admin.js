@@ -55,7 +55,8 @@ const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
     const order = document.getElementById('order')
     const productForm = document.getElementById('productForm')
     const customers = document.getElementById('customers')
-    const menuContents = [order, productForm, customers];
+    const editProd = document.getElementById('editProd')
+    const menuContents = [order, productForm, customers, editProd];
 
     function changeMenu(selectedContent) {
       menuContents.forEach(each => {
@@ -101,3 +102,61 @@ const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
     var response = axios.post('/debit-user', {user: user})
     console.log(response.data);
   })
+
+
+  //logic to edit product
+  var editBtn = document.querySelectorAll('.editBtn')
+  var productName;
+  var prodID = {}
+  editBtn.forEach(each => {
+    each.addEventListener('click', (e) => {
+      var productId = e.target.parentElement.parentElement.children[0].innerHTML
+      prodID.id = productId
+      productName =  e.target.parentElement.parentElement.children[1].innerHTML
+      var modalTitle = document.getElementById('modal-title')
+      modalTitle.innerHTML = productName
+    })
+  });
+
+  function submitEditProdForm(e) {
+    e.innerHTML = "Updating, Please wait...";
+    e.disabled = true;
+    return new Promise((resolve, reject) => {
+      const form = document.getElementById('editProdForm');
+      const formData = new FormData(form);
+      formData.append('id',  prodID.id)
+      
+      fetch('/edit-product', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (!response.ok) {
+          alert('Request failed. This might be a network issue or because  you have not filled in product name, price and category fields.')
+          e.innerHTML = "Submit";
+          throw new Error('Network response was not ok');
+        }
+        return response.text();
+      })
+      .then(data => {
+        // Resolve the promise with response data
+        resolve(data);
+        
+        // Display success message
+        e.disabled = false;
+        appendAlert('Success! Product details has been updated.', 'success');
+        e.innerHTML = "Submit";
+      })
+      .catch(error => {
+        // Reject the promise with error
+        reject(error);
+
+        // Display error message
+        e.disabled = false;
+        appendAlert('Failed, An error occurred while editing product', 'danger');
+        e.innerHTML = "Submit";
+      });
+    });
+}
+
+
