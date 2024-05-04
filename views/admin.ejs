@@ -3,7 +3,8 @@
 <head>
   <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
   <link rel="stylesheet" href="css/admin.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"> 
+  <!-- <link rel="stylesheet" href="css/bootstrap-5.0.2-dist/css/bootstrap.css"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin | CranShaw</title>
@@ -14,17 +15,22 @@
 
       .activeLink{
         color:#337ab7;
-background-color: white;
+        background-color: white;
       }
 
       .gen-container{
         overflow-x: scroll;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
       }
 
       thead{
         column-width: 6rem;
         column-count: 5;
       }
+
 
    </style>
 </head>
@@ -34,7 +40,7 @@ background-color: white;
       <a class="nav-link activeLink" aria-current="page" href="#">Add Product</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">Edit Product</a>
+      <a class="nav-link" href="#"  onclick="changeMenu(editProd)">Edit Product</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="#" onclick="changeMenu(customers)">Customers</a>
@@ -179,9 +185,90 @@ background-color: white;
         <% }) %>
       </tbody>
     </table>
-  </div>
+ </div>
+
+
+
+  <!-- UI to edit product -->
+  <div id="editProd" class="hideContent">
+    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="max-height: 95vh; overflow-y: auto;">
+      <div class="modal-dialog" style="width: 90%; display: block; margin: auto;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title fs-5" id="modal-title">Edit product</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- edit product form -->
+          <form id="editProdForm"  method="post" action="/edit-product" enctype="multipart/form-data" onsubmit="return false" style=" padding: 1em;">
+              <div id="liveAlertPlaceholder" style="position: absolute; top: 10%;"></div> 
+            <h2 style="font-weight: bold;">Edit Product Form</h2>
+            
+            <div class="mb-3">
+              <label  class="form-label">Edit Product Image</label>
+              <input type="file" class="form-control" name="productImage">
+              <div  class="form-text">Leave this field blank if you don't want to change product image.</div>
+            </div>
+        
+            <div class="mb-3">
+              <label  class="form-label">Edit Product Name</label>
+              <input type="text" class="form-control" name="productName" required>
+            </div>
+        
+        
+            <div class="mb-3">
+              <label  class="form-label">Change Price</label>
+              <input type="number" placeholder="&#8358;" class="form-control" name="price" required>
+            </div>
+        
+            <div class="mb-3">
+              <label  class="form-label">Change Category</label>
+              <select class="form-control"name="category">
+                <option value="Electronics">Electronics</option>
+                <option value="Household">Household</option>
+                <option value="Gadgets">Gadgets</option>
+                <option value="Foodstuff">Foodstuff</option>
+                <option value="Clothing">Clothing</option>
+                <option value="Shoes">Shoes</option>
+                <option value="Accessories">Accessories</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" onclick="submitEditProdForm(e = this)" style="display: block; margin: auto;">Submit</button>
+          </form> 
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <table class="table table-hover table-striped" >
+      <thead>
+        <tr>
+          <th>#Id</th>
+          <th>ProductName</th>
+          <th>Price </th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% products.forEach(each => { %>
+          <tr>
+            <td> <%= each.id %> </td>
+            <td> <%= each.Name %> </td>
+            <td> <%= each.price %> </td>
+            <td><button class="editBtn btn btn-success" data-bs-toggle="modal" data-bs-target="#editProductModal">Edit</button></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+ </div>
+
+
+
 </section>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="css/bootstrap-5.0.2-dist/js/bootstrap.js"></script> -->
     <script src="js/admin.js"></script>
     <script src="js/axios.min.js"></script>
 </body>
