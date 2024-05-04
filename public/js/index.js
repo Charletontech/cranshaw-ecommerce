@@ -32,9 +32,9 @@ window.addEventListener("DOMContentLoaded", async () => {
     products.forEach((each) => {
       productsCont.innerHTML += `
                 <div class="productCard">
-                    <img src="${each.img}" alt="${each.Name} picture">
+                    <img src="${each.img}" alt="${each.Name} picture" onclick="popUpDetails(e = this)">
                     <div class="productName">
-                        <p >${each.Name}</p>
+                        <p >${each.Name} </p>
                     </div>
                     <div class="productCardDetailCont">
                         <p>N${each.price}</p>
@@ -53,6 +53,30 @@ window.addEventListener("DOMContentLoaded", async () => {
     console.error("Error fetching products data from server. Error: ", error);
   }
 });
+
+//logic to show product pop up
+var productDetailsPop = document.querySelector('.productDetailsPop')
+var closePopUp = document.querySelector('.closePopUp')
+closePopUp.addEventListener('click', () => {
+  productDetailsPop.classList.toggle('showProductDetails')
+})
+function popUpDetails(e) {
+  productDetailsPop.classList.toggle('showProductDetails')
+  var imgSrc = e.src;
+  var productName = e.parentNode.children[1].children[0].innerText
+  var productPrice = e.parentNode.children[2].children[0].innerText
+  
+  var popUpProductName = document.querySelector('.popUpProductName')
+  var popUpProductPrice = document.querySelector('.popUpProductPrice')
+  var popUpImg = document.querySelector('.productDetailsPop img')
+  
+  popUpProductName.innerHTML = productName;
+  popUpProductPrice.innerHTML = productPrice;
+  popUpImg.src = imgSrc
+}
+
+
+
 
 //logic to add product to cart
 document.addEventListener("click", function (event) {
@@ -100,7 +124,7 @@ function displayCart(foundProd, total) {
         <img src="${foundProd.img}" alt="">
         <div class="cartDetails">
             <div class="cartDetailsHeader">
-                <h3>${foundProd.Name}</h3>
+                <h3>${foundProd.Name} ajkdjak dkajaka  </h3>
                 <p class="delete">
                     <svg style="fill: red;" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
                 </p>
