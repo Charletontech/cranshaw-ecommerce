@@ -96,12 +96,29 @@ const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
 
 
   // logic to debit user
-  var debitBtn = document.getElementById('debitBtn')
-  debitBtn.addEventListener('click', (e) => {
-    var user = e.target.parentElement.parentElement.children[3].innerHTML;
-    var response = axios.post('/debit-user', {user: user})
-    console.log(response.data);
-  })
+  var debitBtn = document.querySelectorAll('.debitBtn')
+  debitBtn.forEach(each => {
+    each.addEventListener('click', async (e) => {
+      e.target.innerHTML = 'Please wait...'
+      e.target.disabled = true;
+     try {
+      var user = e.target.parentElement.parentElement.children[3].innerHTML;
+      var response = await axios.post('/debit-user', {user: user})
+      if (response.data) {
+        alert(response.data)
+        e.target.disabled = false;
+        e.target.innerHTML = 'Debit User'
+      }
+     } catch (error) {
+      if (error) {
+        alert(`Failed: ${error.response.data}. `)
+        e.target.disabled = false;
+        e.target.innerHTML = 'Debit User'
+      }
+      console.log(error);
+     }
+    })
+  });
 
 
   //logic to edit product
