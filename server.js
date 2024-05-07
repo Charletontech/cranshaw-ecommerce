@@ -43,6 +43,26 @@ cloudinary.config({
 });
 
 
+
+//logic to generate logon token
+const getToken = async () => {
+  try {
+    const payLoad = {
+      clientKey: process.env.CLIENT_KEY,
+      clientSecret: process.env.CLIENT_SECRET,
+      clientId: process.env.CLIENT_ID,
+      rememberMe: true,
+    };
+    var response = await axios.post('http://196.46.20.83:3021/clients/v1/auth/_login', payLoad)
+    var token = response.data.token
+    return token
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+
 app.get("/db-init", (req, res) => {
   var sql =
     "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, regDate VARCHAR(15), fullName VARCHAR(255), phone VARCHAR(15), email VARCHAR(255), account VARCHAR(15), balance VARCHAR(255), dob VARCHAR(15), gender VARCHAR(15), password VARCHAR(255) )";
@@ -117,25 +137,11 @@ app.post("/signup", (req, res) => {
     });
   }
 
-  //logic to generate password
-  const generateToken = async () => {
-    try {
-      const payLoad = {
-        clientKey: process.env.CLIENT_KEY,
-        clientSecret: process.env.CLIENT_SECRET,
-        clientId: process.env.CLIENT_ID,
-        rememberMe: true,
-      };
-
-      const response = await axios.post(
-        "http://196.46.20.83:3021/clients/v1/auth/_login",
-        payLoad
-      );
-      generateWalletAccount(response.data.token);
-    } catch (error) {
-      console.error("Error generating token:", error);
-    }
+ const generateToken = async () => {
+    var token = await getToken()
+    generateWalletAccount(token);
   };
+
 
   async function generateWalletAccount(token) {
     try {
@@ -428,6 +434,65 @@ app.post('/add-product', (req, res) => {
     }
   });
 });
+
+
+
+app.post('/debit-user',   (req, res) => {
+  var user = req.body.user
+    var sql = ORM.select('account', 'users', 'phone', `${user}`)
+    connection.query(sql, async (err, result) => {
+      if (err) throw err;
+      var token = await getToken()
+      var acctNo = result[0].account;
+      getBalance(token, acctNo)
+    })
+  
+  
+  try {
+    var getBalance = async (token, acctNo) => {
+      var response = await axios.get(`http://196.46.20.83:3021/clients/v1/accounts/${acctNo}/_balance`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      var balance = response.data.balance; 
+      if (balance <= 0) {
+        console.log('insuf');
+        res.status(402).json('This user has no money in the account.')
+        return
+      }
+      debitUser(token, acctNo, balance)
+    }; 
+
+    var debitUser = async (token, acctNo, balance) => {
+      const payload = JSON.stringify({
+        "account": acctNo, // Assuming acctId is the account number
+        "reference": "001",
+        "amount": balance, // Assuming receivedBalance is the amount to debit
+        "description": "Debit for funding wallet - Craneshaw",
+        "channel": "1"
+      });
+
+      var response = await axios.post('http://196.46.20.83:3021:3021/clients/v1/transactions/_debit', payload);
+      creditBalance(balance);
+    };
+
+    var creditBalance = (balance) => {
+      var sql = ORM.update('users', 'balance', `${balance}`, 'phone', `${user}`)
+      connection.query(sql, (err, result) => {
+        if (err) throw err;
+        res.status(200).json('Admin credited and user balance updated successfully.')
+      })
+    };
+    
+  } catch (error) {
+    console.log(error);
+    res.status(402).json('error occurred while debiting user')
+  }
+
+
+})
+
 
 
 
