@@ -473,7 +473,7 @@ app.post('/debit-user',   (req, res) => {
         "channel": "1"
       });
 
-      var response = await axios.post('http://196.46.20.83:3021:3021/clients/v1/transactions/_debit', payload);
+      var response = await axios.post('http://196.46.20.83:3021/clients/v1/transactions/_debit', payload);
       creditBalance(balance);
     };
 
